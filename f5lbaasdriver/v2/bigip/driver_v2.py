@@ -440,7 +440,7 @@ class MemberManager(EntityManager):
             'port': {
                 'tenant_id': subnet['tenant_id'],
                 'network_id': subnet['network_id'],
-                'mac_address': attribdutes.ATTR_NOT_SPECIFIED,
+                'mac_address': attributes.ATTR_NOT_SPECIFIED,
                 'fixed_ips': attributes.ATTR_NOT_SPECIFIED,
                 'device_id': member.id,
                 'device_owner': 'network:f5lbaasv2',
