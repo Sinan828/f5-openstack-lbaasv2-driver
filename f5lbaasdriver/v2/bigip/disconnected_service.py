@@ -81,3 +81,24 @@ class DisconnectedService(object):
                 data['physical_network'] = network['provider:physical_network']
 
         return data
+
+    def get_segment_id(self, context, port_id, agent_hosts):
+        try:
+            segment = None
+            if agent_hosts:
+                for host_id in agent_hosts:
+                    levels = db.get_binding_levels(context.session, port_id, host_id)
+                    if levels:
+                        LOG.debug('XXXX levels: %s binding host_id: %s' % (levels, host_id))
+                        for level in levels:
+                            segment = db.get_segment_by_id(context.session, level.segment_id)
+                            if segment:
+                                if segment.get('network_type', None) == "vlan":
+                                    LOG.debug('XXXX hpb port id: %s, network type is vlan: %s' % (port_id, segment))
+                                    break
+                                else:
+                                    LOG.debug('XXXX hpb port id: %s, network type is vxlan: %s' % (port_id, segment))
+            return segment
+        except Exception as exc:
+            LOG.error(
+                "could not get segment id by port %s and host %s, %s" % (port_id, agent_hosts, exc.message))
